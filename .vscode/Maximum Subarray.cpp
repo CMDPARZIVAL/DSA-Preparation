@@ -1,51 +1,47 @@
 #include <iostream>
 #include <vector>
-#include <algorithm> // For std::sort
-#include <climits>   // For INT_MAX
+#include <algorithm>
+#include <climits>
 
 using namespace std;
 
-// Function to find the minimum difference
-int findMinDiff(vector<int>& arr, int m) {
-    int n = arr.size();
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        // Initialize max_sum to the smallest possible integer 
+        // to handle cases where all numbers are negative.
+        int max_sum = INT_MIN; 
+        int current_sum = 0;
 
-    // Edge Cases
-    if (m == 0 || n == 0) return 0;
-    
-    // If there are fewer packets than students, distribution is impossible
-    if (n < m) return -1;
+        for (int i = 0; i < nums.size(); i++) {
+            current_sum += nums[i]; 
 
-    // Step 1: Sort the array
-    sort(arr.begin(), arr.end());
+            // Update max_sum if current_sum is the best we've seen
+            if (current_sum > max_sum) {
+                max_sum = current_sum;
+            }
 
-    int min_diff = INT_MAX;
-
-    // Step 2: Slide a window of size 'm' across the array
-    // We stop at n - m because that's the last valid starting position for a window of size m
-    for (int i = 0; i <= n - m; i++) {
-        // Minimum element in this window is arr[i]
-        // Maximum element in this window is arr[i + m - 1]
-        int current_diff = arr[i + m - 1] - arr[i];
-
-        // Update the global minimum difference
-        if (current_diff < min_diff) {
-            min_diff = current_diff;
+            // If sum becomes negative, it's a burden. 
+            // Reset to 0 to start a fresh subarray from the next element.
+            if (current_sum < 0) {
+                current_sum = 0;
+            }
         }
-    }
 
-    return min_diff;
-}
+        return max_sum;
+    }
+};
 
 int main() {
-    // Example 1
-    vector<int> arr1 = {7, 3, 2, 4, 9, 12, 56};
-    int m1 = 3;
-    cout << "Minimum difference is: " << findMinDiff(arr1, m1) << endl;
+    Solution sol;
+    
+    // Example 1: Standard case
+    vector<int> nums1 = {-2, 1, -3, 4, -1, 2, 1, -5, 4};
+    cout << "Max Subarray Sum (Example 1): " << sol.maxSubArray(nums1) << endl; // Output: 6
 
-    // Example 2
-    vector<int> arr2 = {3, 4, 1, 9, 56, 7, 9, 12};
-    int m2 = 5;
-    cout << "Minimum difference is: " << findMinDiff(arr2, m2) << endl;
+    // Example 2: All negative numbers
+    vector<int> nums2 = {-5, -1, -8, -2};
+    cout << "Max Subarray Sum (Example 2): " << sol.maxSubArray(nums2) << endl; // Output: -1
 
     return 0;
 }
